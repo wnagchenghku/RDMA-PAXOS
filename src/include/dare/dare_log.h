@@ -37,6 +37,7 @@ struct dare_log_entry_t {
     uint16_t clt_id;    /* LID of client */
     uint8_t  type;      /* CSM, CONFIG, NOOP, HEAD */
     //uint8_t  pad[5];
+    uint8_t  reply[MAX_SERVER_COUNT];
     union {
         sm_cmd_t   cmd;
         dare_cid_t cid;

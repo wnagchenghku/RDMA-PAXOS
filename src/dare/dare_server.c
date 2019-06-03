@@ -1091,6 +1091,8 @@ polling()
     through the CTRL QP */
     check_failure_count();
 
+    persist_new_entries();
+
     if (IS_LEADER) {
         /* Try to commit new log entries */
         commit_new_entries();
@@ -1752,15 +1754,6 @@ commit_new_entries()
     if (log_offset_end_distance(data.log, data.log->commit)) {
         //info_wtime(log_fp, "TRY TO COMMIT NEW ENTRY\n");
         //INFO_PRINT_LOG(log_fp, data.log);
-
-        uint64_t offset = data.log->commit;
-        dare_log_entry_t *entry;
-        while (log_offset_end_distance(data.log, offset)) {
-            entry = log_get_entry(data.log, &offset);
-            data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
-            offset += log_entry_len(entry);
-        }
-
         rc = dare_ib_write_remote_logs(1);
         if (0 != rc) {
             error(log_fp, "Cannot write remote logs\n");
@@ -1791,6 +1784,17 @@ commit_new_entries()
                 break;
             }
         }
+    }
+}
+
+static void
+persist_new_entries()
+{
+    dare_log_entry_t *entry;
+    while (log_is_offset_larger(data.log, data.log->end, data.log->old_end))
+        entry = log_get_entry(data.log, &data.log->old_end);
+        data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
+        data.log->old_end += log_entry_len(entry);
     }
 }
 
