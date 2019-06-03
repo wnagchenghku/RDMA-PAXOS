@@ -1806,6 +1806,43 @@ sprintf(posted_sends_str, "%s %d-wr", posted_sends_str, i);
     return RC_SUCCESS;
 }
 
+int rc_send_entries_reply()
+{
+    int rc;
+    uint8_t leader_idx = SID_GET_L(SRV_DATA->ctrl_data->sid);
+
+    /* Set offset accordingly */
+    uint32_t offset = (uint32_t)offsetof(dare_log_entry_t, reply) 
+                    + sizeof(uint8_t) * SRV_DATA->config.idx
+                    + SRV_DATA->log->old_end
+                    + (uint32_t)offsetof(dare_log_t, entries);
+
+    void *local_buf = (uint8_t*)SRV_DATA->log + offset;
+    *(uint8_t*)local_buf = 1;
+
+    /* Issue RDMA Write operations */
+    ssn++;
+    
+    dare_ib_ep_t *ep = (dare_ib_ep_t*)SRV_DATA->config.servers[leader_idx].ep;
+    if (0 == ep->rc_connected) {
+        return 0;
+    }
+
+    rem_mem_t rm;
+    rm.raddr = ep->rc_ep.rmt_mr[LOG_QP].raddr + offset;
+    rm.rkey = ep->rc_ep.rmt_mr[LOG_QP].rkey;
+    
+    /* server_id, qp_id, buf, len, mr, opcode, signaled, rm, posted_sends */ 
+    rc = post_send(leader_idx, LOG_QP, local_buf,
+                    sizeof(uint8_t), IBDEV->lcl_mr[LOG_QP],
+                    IBV_WR_RDMA_WRITE, NOTSIGNALED, rm, NULL);
+    if (0 != rc) {
+        /* This should never happen */
+        error_return(1, log_fp, "Cannot post send operation\n");
+    }
+
+}
+
 /**
  * Log replication
  */

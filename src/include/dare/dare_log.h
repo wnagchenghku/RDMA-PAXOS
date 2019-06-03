@@ -87,6 +87,8 @@ struct dare_log_t
                     if end==head the buffer is full */
     uint64_t tail;  /* offset of the last entry
                     Note: tail + sizeof(last_entry) == end */
+
+    uint64_t old_end;
     
     uint64_t len;
     
@@ -126,6 +128,8 @@ log_new()
     log->len  = LOG_SIZE;
     log->end  = log->len;
     log->tail = log->len;
+
+    log->old_end = log->len;
 
     return log;
 }

@@ -452,6 +452,11 @@ int dare_ib_write_remote_logs( int wait_for_commit )
     return rc_write_remote_logs(wait_for_commit);
 }
 
+int dare_ib_send_entries_reply()
+{
+    return rc_send_entries_reply();
+}
+
 /**
  * Get remote apply offsets
  */

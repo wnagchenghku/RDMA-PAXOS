@@ -72,6 +72,7 @@ int rc_send_vote_ack();
 /* Normal operation */
 int rc_verify_leadership( int *leader );
 int rc_write_remote_logs( int wait_for_commit );
+int rc_send_entries_reply();
 int rc_get_remote_apply_offsets();
 
 /* QP interface */

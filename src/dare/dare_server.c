@@ -1794,6 +1794,9 @@ persist_new_entries()
     while (log_is_offset_larger(data.log, data.log->end, data.log->old_end))
         entry = log_get_entry(data.log, &data.log->old_end);
         data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
+        if (!IS_LEADER) {
+             dare_ib_send_entries_reply();
+        }
         data.log->old_end += log_entry_len(entry);
     }
 }
