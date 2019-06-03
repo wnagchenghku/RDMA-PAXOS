@@ -497,6 +497,7 @@ log_append_entry( dare_log_t* log,
     entry->req_id  = req_id;
     entry->clt_id  = clt_id;
     entry->type    = type;
+    memset(entry->reply, 0, MAX_SERVER_COUNT);
     if (!log_fit_entry_header(log, log->end)) {
         log->end = 0;
     }
