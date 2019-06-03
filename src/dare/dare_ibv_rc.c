@@ -1722,6 +1722,21 @@ info(log_fp, "%s\n", buf);
         j++;
     }
 
+    while (log_offset_end_distance(SRV_DATA->log, SRV_DATA->log->local_commit)) {
+        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, SRV_DATA->log->local_commit);
+        int replies = 0;
+        for (i = 0; i < size; ++i) {
+            if ((i == SRV_DATA->config.idx) || (entry->reply[i] == 1)) {
+                replies++;
+            }
+        }
+        if (replies < size / 2) {
+            min_offset = SRV_DATA->log->local_commit;
+            break;
+        }
+        SRV_DATA->log->local_commit += log_entry_len(entry);
+    }
+
     if (log_is_offset_larger(SRV_DATA->log, min_offset, SRV_DATA->log->commit)) {
     //if (SRV_DATA->log->commit < min_offset) {
         /* Update local commit offset... */ 
