@@ -532,6 +532,7 @@ log_append_entry( dare_log_t* log,
                 entry->clt_id       = clt_id;
                 entry->type         = type;
                 entry->data.cmd.len = cmd->len;
+                memset(entry->reply, 0, MAX_SERVER_COUNT);
             }
             /* Copy the command */
             if (cmd->len) {
