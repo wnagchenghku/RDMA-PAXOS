@@ -1723,7 +1723,7 @@ info(log_fp, "%s\n", buf);
     }
 
     while (log_offset_end_distance(SRV_DATA->log, SRV_DATA->log->old_commit)) {
-        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, SRV_DATA->log->old_commit);
+        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, &SRV_DATA->log->old_commit);
         int replies = 0;
         for (i = 0; i < size; ++i) {
             if ((i == SRV_DATA->config.idx) || (entry->reply[i] == 1)) {
