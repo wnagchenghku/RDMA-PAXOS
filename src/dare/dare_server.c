@@ -1795,6 +1795,10 @@ persist_new_entries()
     dare_log_entry_t *entry;
     while (log_is_offset_larger(data.log, data.log->end, data.log->old_end)) {
         entry = log_get_entry(data.log, &data.log->old_end);
+        if (!log_fit_entry(data.log, data.log->old_end, entry)) {
+            data.log->old_end = 0;
+            continue;
+        }
         data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
         if (!IS_LEADER) {
              dare_ib_send_entries_reply();

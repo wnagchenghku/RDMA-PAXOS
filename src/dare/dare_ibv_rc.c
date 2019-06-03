@@ -1722,8 +1722,9 @@ info(log_fp, "%s\n", buf);
         j++;
     }
 
-    while (log_offset_end_distance(SRV_DATA->log, SRV_DATA->log->old_commit)) {
-        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, &SRV_DATA->log->old_commit);
+    min_offset = SRV_DATA->log->commit;
+    while (log_offset_end_distance(SRV_DATA->log, min_offset)) {
+        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, &min_offset);
         int replies = 0;
         for (i = 0; i < size; ++i) {
             if ((i == SRV_DATA->config.idx) || (entry->reply[i] == 1)) {
@@ -1731,10 +1732,9 @@ info(log_fp, "%s\n", buf);
             }
         }
         if (replies < size / 2) {
-            min_offset = SRV_DATA->log->old_commit;
             break;
         }
-        SRV_DATA->log->old_commit += log_entry_len(entry);
+        min_offset += log_entry_len(entry);
     }
 
     if (log_is_offset_larger(SRV_DATA->log, min_offset, SRV_DATA->log->commit)) {
