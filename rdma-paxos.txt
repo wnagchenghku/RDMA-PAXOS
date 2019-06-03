@@ -8,3 +8,5 @@ Change nodes in /benchmarks/run.sh and run the benchmark:
 ./benchmarks/run.sh app=redis
 
 Check the client clt.log on node[-2]
+
+To switch to the original version: e7992b1ab9f74219fac25fc4f35821de0e504c73
