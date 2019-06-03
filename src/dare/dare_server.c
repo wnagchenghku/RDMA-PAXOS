@@ -108,6 +108,8 @@ static void
 commit_new_entries();
 static void 
 apply_committed_entries();
+static void 
+persist_new_entries();
 
 static double
 random_election_timeout();
@@ -1791,7 +1793,7 @@ static void
 persist_new_entries()
 {
     dare_log_entry_t *entry;
-    while (log_is_offset_larger(data.log, data.log->end, data.log->old_end))
+    while (log_is_offset_larger(data.log, data.log->end, data.log->old_end)) {
         entry = log_get_entry(data.log, &data.log->old_end);
         data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
         if (!IS_LEADER) {
