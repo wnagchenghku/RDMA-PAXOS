@@ -89,6 +89,7 @@ struct dare_log_t
                     Note: tail + sizeof(last_entry) == end */
 
     uint64_t old_end;
+    uint64_t old_commit;
     
     uint64_t len;
     
