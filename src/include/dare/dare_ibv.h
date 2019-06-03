@@ -171,6 +171,7 @@ int dare_ib_send_vote_ack();
 /* Normal operation */
 int dare_ib_establish_leadership();
 int dare_ib_write_remote_logs( int wait_for_commit );
+int dare_ib_send_entries_reply();
 int dare_ib_get_remote_apply_offsets();
 
 /* Handle client requests */
