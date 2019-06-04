@@ -1823,9 +1823,8 @@ sprintf(posted_sends_str, "%s %d-wr", posted_sends_str, i);
 
 int rc_send_entries_reply()
 {
-    int rc;
-
-    int posted_sends[MAX_SERVER_COUNT];
+    int posted_sends[MAX_SERVER_COUNT], rc;
+    uint8_t i;
     for (i = 0; i < MAX_SERVER_COUNT; i++) {
         posted_sends[i] = -1;
     }
