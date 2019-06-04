@@ -46,4 +46,4 @@ For the CSM requests, if there is not enough room for the cmd, DARE just appends
 
 When wrap around, we first append the entry header at the end, which has the length of the cmd, then append the whole entry at the beginning. In this case, we can know when there is not enough room for the cmd.
 
-Note above how send this remaining circular buffer at the end.
+Note above how send this remaining circular buffer at the end (`local_buf[0]`).
