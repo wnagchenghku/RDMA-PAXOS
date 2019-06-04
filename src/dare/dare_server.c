@@ -1793,7 +1793,6 @@ static void
 persist_new_entries()
 {
     dare_log_entry_t *entry;
-    int rc;
     while (log_is_offset_larger(data.log, data.log->end, data.log->old_end)) {
         entry = log_get_entry(data.log, &data.log->old_end);
         if (!log_fit_entry(data.log, data.log->old_end, entry)) {
@@ -1804,10 +1803,7 @@ persist_new_entries()
         if (IS_LEADER) {
             entry->sender = data.config.idx;
         } else {
-            rc = dare_ib_send_entries_reply(entry->sender);
-            if (0 != rc) {
-                error(log_fp, "Cannot write entries reply to leader\n");
-            }
+            dare_ib_send_entries_reply(entry->sender);
         }
         data.log->old_end += log_entry_len(entry);
     }

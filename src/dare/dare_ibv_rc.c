@@ -1823,13 +1823,7 @@ sprintf(posted_sends_str, "%s %d-wr", posted_sends_str, i);
 
 int rc_send_entries_reply( uint8_t idx )
 {
-    int posted_sends[MAX_SERVER_COUNT], rc;
-    uint8_t i;
-    for (i = 0; i < MAX_SERVER_COUNT; i++) {
-        posted_sends[i] = -1;
-    }
-
-    posted_sends[idx] = 1;
+    int rc;
     
     /* Set offset accordingly */
     uint32_t offset = (uint32_t)offsetof(dare_log_entry_t, reply) 
@@ -1855,18 +1849,10 @@ int rc_send_entries_reply( uint8_t idx )
     /* server_id, qp_id, buf, len, mr, opcode, signaled, rm, posted_sends */ 
     rc = post_send(idx, LOG_QP, local_buf,
                     sizeof(uint8_t), IBDEV->lcl_mr[LOG_QP],
-                    IBV_WR_RDMA_WRITE, SIGNALED, rm, posted_sends);
+                    IBV_WR_RDMA_WRITE, NOTSIGNALED, rm, NULL);
     if (0 != rc) {
         /* This should never happen */
         error_return(1, log_fp, "Cannot post send operation\n");
-    }
-    
-    rc = wait_for_one(posted_sends, LOG_QP);
-    if (RC_ERROR == rc) {
-        /* This should never happen */
-    }
-    if (RC_SUCCESS != rc) {
-        return -1;
     }
 
     return 0;
