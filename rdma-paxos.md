@@ -17,6 +17,8 @@ To enable debug mode, set `DEBUGOPT := 1` in makefile.init
 
 When DARE calls `rc_write_remote_logs()` (to commit new entries), it will loop until it commits (Note `wait_for_commit == 1`).
 
+> Or it has looped for `threshold` times.
+
 In `rc_write_remote_logs()`, if it is not commited (i.e., committed != 1), it will loop back to loop_for_commit.
 And then invoke `update_remote_logs()` again.
 
