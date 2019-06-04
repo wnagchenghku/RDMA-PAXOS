@@ -1731,7 +1731,7 @@ info(log_fp, "%s\n", buf);
                 replies++;
             }
         }
-        if (replies < size / 2) {
+        if (replies < (size / 2 + 1)) {
             break;
         }
         min_offset += log_entry_len(entry);
