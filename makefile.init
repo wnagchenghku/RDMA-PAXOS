@@ -1,2 +1,2 @@
 ROOT_DIR := $(shell pwd)
-DEBUGOPT := 0
+DEBUGOPT := 1
