@@ -44,6 +44,8 @@ means the circular buffer is wrapped.
 
 For the CSM requests, if there is not enough room for the cmd, DARE just appends the whole entry at the beginning of the log. In applying the committed entries, if there is not enough rooom, DARE just sets apply=0.
 
-When wrap around, we first append the entry header at the end, which has the length of the cmd, then append the whole entry at the beginning. In this case, we can know when there is not enough room for the cmd.
+When wrap around, we first append the entry header at the end if there is enough space for the header, which has the length of the cmd, then append the whole entry at the beginning. In this case, we can know when there is not enough room for the cmd.
 
 Note above how send this remaining circular buffer at the end (`local_buf[0]`).
+
+If there is not enough space for the header, we just append the whole entry at the beginning of the log.
