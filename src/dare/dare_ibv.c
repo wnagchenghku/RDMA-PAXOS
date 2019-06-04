@@ -452,9 +452,9 @@ int dare_ib_write_remote_logs( int wait_for_commit )
     return rc_write_remote_logs(wait_for_commit);
 }
 
-int dare_ib_send_entries_reply()
+int dare_ib_send_entries_reply( uint8_t idx )
 {
-    return rc_send_entries_reply();
+    return rc_send_entries_reply(idx);
 }
 
 /**

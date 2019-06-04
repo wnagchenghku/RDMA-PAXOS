@@ -1801,11 +1801,13 @@ persist_new_entries()
             continue;
         }
         data.sm->proxy_store_cmd(&entry->clt_id, data.sm->up_para);
-        if (!IS_LEADER) {
-             rc = dare_ib_send_entries_reply();
-             if (0 != rc) {
-                 error(log_fp, "Cannot write entries reply to leader\n");
-             }
+        if (IS_LEADER) {
+            entry->sender = data.config.idx;
+        } else {
+            rc = dare_ib_send_entries_reply(entry->sender);
+            if (0 != rc) {
+                error(log_fp, "Cannot write entries reply to leader\n");
+            }
         }
         data.log->old_end += log_entry_len(entry);
     }

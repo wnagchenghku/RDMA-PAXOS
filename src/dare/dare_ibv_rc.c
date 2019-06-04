@@ -1821,7 +1821,7 @@ sprintf(posted_sends_str, "%s %d-wr", posted_sends_str, i);
     return RC_SUCCESS;
 }
 
-int rc_send_entries_reply()
+int rc_send_entries_reply( uint8_t idx )
 {
     int posted_sends[MAX_SERVER_COUNT], rc;
     uint8_t i;
@@ -1829,8 +1829,7 @@ int rc_send_entries_reply()
         posted_sends[i] = -1;
     }
 
-    uint8_t leader_idx = SID_GET_L(SRV_DATA->ctrl_data->sid);
-    posted_sends[leader_idx] = 1;
+    posted_sends[idx] = 1;
     
     /* Set offset accordingly */
     uint32_t offset = (uint32_t)offsetof(dare_log_entry_t, reply) 
@@ -1844,7 +1843,7 @@ int rc_send_entries_reply()
     /* Issue RDMA Write operations */
     ssn++;
     
-    dare_ib_ep_t *ep = (dare_ib_ep_t*)SRV_DATA->config.servers[leader_idx].ep;
+    dare_ib_ep_t *ep = (dare_ib_ep_t*)SRV_DATA->config.servers[idx].ep;
     if (0 == ep->rc_connected) {
         return 0;
     }
@@ -1854,7 +1853,7 @@ int rc_send_entries_reply()
     rm.rkey = ep->rc_ep.rmt_mr[LOG_QP].rkey;
     
     /* server_id, qp_id, buf, len, mr, opcode, signaled, rm, posted_sends */ 
-    rc = post_send(leader_idx, LOG_QP, local_buf,
+    rc = post_send(idx, LOG_QP, local_buf,
                     sizeof(uint8_t), IBDEV->lcl_mr[LOG_QP],
                     IBV_WR_RDMA_WRITE, SIGNALED, rm, posted_sends);
     if (0 != rc) {
