@@ -40,3 +40,6 @@ server->send_count = 2;
 means the circular buffer is wrapped.
 
 > Every server applies the RSM operations stored in the log entries between its apply and commit pointers; once an operation is applied, the server advances its apply pointer. When an RSM operation is applied by all the non-faulty servers in the group, the entry containing it can be removed from the log. Thus, the leader advances its own head pointer to the smallest apply pointer in the group; then, it appends to the log an HEAD entry that contains the new head pointer. Servers update their head pointer only when they encounter a committed HEAD entry;
+
+
+For the CSM requests, if there is not enough room for the cmd, DARE just appends the whole entry at the beginning of the log. In applying the committed entries, if there is not enough rooom, DARE just sets apply=0.
