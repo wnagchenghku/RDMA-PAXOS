@@ -1826,7 +1826,7 @@ int rc_send_entries_reply()
     int rc;
 
     int posted_sends[MAX_SERVER_COUNT];
-    for (i = 0; i < size; i++) {
+    for (i = 0; i < MAX_SERVER_COUNT; i++) {
         posted_sends[i] = -1;
     }
 
