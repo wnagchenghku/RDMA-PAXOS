@@ -1824,8 +1824,15 @@ sprintf(posted_sends_str, "%s %d-wr", posted_sends_str, i);
 int rc_send_entries_reply()
 {
     int rc;
-    uint8_t leader_idx = SID_GET_L(SRV_DATA->ctrl_data->sid);
 
+    int posted_sends[MAX_SERVER_COUNT];
+    for (i = 0; i < size; i++) {
+        posted_sends[i] = -1;
+    }
+
+    uint8_t leader_idx = SID_GET_L(SRV_DATA->ctrl_data->sid);
+    posted_sends[leader_idx] = 1;
+    
     /* Set offset accordingly */
     uint32_t offset = (uint32_t)offsetof(dare_log_entry_t, reply) 
                     + sizeof(uint8_t) * SRV_DATA->config.idx
@@ -1850,12 +1857,21 @@ int rc_send_entries_reply()
     /* server_id, qp_id, buf, len, mr, opcode, signaled, rm, posted_sends */ 
     rc = post_send(leader_idx, LOG_QP, local_buf,
                     sizeof(uint8_t), IBDEV->lcl_mr[LOG_QP],
-                    IBV_WR_RDMA_WRITE, NOTSIGNALED, rm, NULL);
+                    IBV_WR_RDMA_WRITE, SIGNALED, rm, posted_sends);
     if (0 != rc) {
         /* This should never happen */
         error_return(1, log_fp, "Cannot post send operation\n");
     }
+    
+    rc = wait_for_one(posted_sends, LOG_QP);
+    if (RC_ERROR == rc) {
+        /* This should never happen */
+    }
+    if (RC_SUCCESS != rc) {
+        return -1;
+    }
 
+    return 0;
 }
 
 /**
