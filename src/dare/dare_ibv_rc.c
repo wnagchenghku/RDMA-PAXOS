@@ -1723,12 +1723,12 @@ info(log_fp, "%s\n", buf);
     }
 
     min_offset = SRV_DATA->log->commit;
-    dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, &min_offset);
-    if (!log_fit_entry(SRV_DATA->log, min_offset, entry)) {
-        min_offset = 0;
-    }
     while (log_offset_end_distance(SRV_DATA->log, min_offset)) {
-        entry = log_get_entry(SRV_DATA->log, &min_offset);
+        dare_log_entry_t *entry = log_get_entry(SRV_DATA->log, &min_offset);
+        if (!log_fit_entry(SRV_DATA->log, min_offset, entry)) {
+            min_offset = 0;
+            continue;
+        }
         int replies = 0;
         for (i = 0; i < size; ++i) {
             if ((i == SRV_DATA->config.idx) || (entry->reply[i] == 1)) {
