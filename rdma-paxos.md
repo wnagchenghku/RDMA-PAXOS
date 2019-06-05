@@ -49,3 +49,8 @@ When wrap around, we first append the entry header at the end if there is enough
 Note above how send this remaining circular buffer at the end (`local_buf[0]`).
 
 If there is not enough space for the header, we just append the whole entry at the beginning of the log.
+
+If leader election happens between the benchmark, the test cannot move on because the benchmark cannot find the new leader. Another problem, if the leader election happens, and a request is ongoing and has not been committed, then the leader switches to the follower, the worker request thread on the old leader will spin forever. Note the old leader will call proxy_do_action instead of proxy_update_state, so the worker request thread will spin.
+
+After the old leader becomes a follower, what should be returned in hooked function of the non-committed entries?
+
