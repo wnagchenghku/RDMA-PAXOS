@@ -1465,7 +1465,7 @@ uint64_t offsets[MAX_SERVER_COUNT];
 static int
 update_remote_logs()
 {
-    int rc, init;
+    int rc, init, replies;
     server_t *server;
     dare_ib_ep_t *ep;
     void *local_buf[2];
@@ -1729,7 +1729,7 @@ info(log_fp, "%s\n", buf);
             min_offset = 0;
             continue;
         }
-        int replies = 0;
+        replies = 0;
         for (i = 0; i < size; ++i) {
             if ((i == SRV_DATA->config.idx) || (entry->reply[i] == 1)) {
                 replies++;
