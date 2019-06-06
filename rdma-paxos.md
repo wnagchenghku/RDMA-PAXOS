@@ -54,3 +54,4 @@ If leader election happens between the benchmark, the test cannot move on becaus
 
 After the old leader becomes a follower, what should be returned in hooked function of the non-committed entries?
 
+Notice that `info_wtime()` in debug.h uses `fflush()` which might be be costly. This expensive operation could possibly delay the leader sending heartbeats, which triggers the leader election.
