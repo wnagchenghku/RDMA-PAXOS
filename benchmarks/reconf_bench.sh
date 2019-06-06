@@ -86,7 +86,7 @@ FindLeader() {
            fi
         done
     done
-    #echo "Leader: p${leader_idx} ($leader)"
+    echo "Leader: p${leader_idx} ($leader)"
 }
 
 RemoveLeader() {
@@ -217,7 +217,7 @@ elif [[ "$APP" == "redis" ]]; then
 fi
 
 # list of allocated nodes, e.g., nodes=(n112002 n112001 n111902)
-nodes=(10.22.1.4 10.22.1.5 10.22.1.6 10.22.1.7 10.22.1.8 10.22.1.9 202.45.128.159)
+nodes=(10.22.1.3 10.22.1.4 10.22.1.5 10.22.1.6 10.22.1.7 10.22.1.8 10.22.1.9 202.45.128.159)
 node_count=${#nodes[@]}
 
 echo "Allocated ${node_count} nodes:" > nodes
@@ -329,20 +329,15 @@ FailServer() {
 
 ########################################################################
 
-# Start DARE (size = 5)
+# Start DARE
 Start
 
-# Upsize (size = 6)
-Upsize
+# Upsize
 
-# Upsize (size = 7)
-Upsize
+# Upsize
 
-# Remove the leader (size = 6)
+# Remove the leader
 FailLeader
 
-# Remove a server that is not the leader (size = 5)
-FailServer 
-
-# Add a server (size = 6)
-RecoverServer stop
+# Remove a server that is not the leader
+FailServer stop
