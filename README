@@ -3,7 +3,7 @@ APUS: fast and scalable paxos on RDMA
 
 Build APUS
 ----------
-The code base of APUS is based on DARE [HPDC'15]
+The source code of APUS is based on DARE [HPDC'15]
 
 Prerequisites
  - libev
